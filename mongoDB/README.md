@@ -1,45 +1,24 @@
-# 📚 MongoDB Lecture Notes
+# 📚 MongoDB
 
-MongoDB is a popular NoSQL database known for its flexibility, scalability, and ease of use. It stores data in **documents**, grouped into **collections**.
-
----
+Welcome to our introductory lecture on MongoDB. MongoDB is a popular NoSQL database known for its flexibility, scalability, and ease of use. It stores entries as documents and groups them in collections.
 
 ## 📖 Documents and Collections
 
-In MongoDB, data is stored in JSON-like structures called **documents**, made up of field-value pairs.
+### Documents
 
-**Example JSON document:**
+- **Structure**: In MongoDB, data is stored in documents, which are JSON-like objects. A document consists of field-value pairs.
+- **Size Limit**: Each document has a maximum size limit of 16MB.
+- **Dot Notation**: This allows you to access nested fields within a document.
+- **Embedded Documents**: Documents can contain other documents, allowing you to store related data together.
 
-```json
-{
-  "title": "Learning MongoDB",
-  "content": "Introduction to MongoDB features",
-  "tags": ["MongoDB", "NoSQL"],
-  "author": { "name": "Jorge", "id": 1 }
-}
-```
+### Collections
 
-A **collection** is a group of documents. Unlike relational databases, collections do not enforce a fixed schema—documents within a collection can have different structures.
-
----
+- A **collection** is a group of documents, similar to a table in a relational database.
+- Collections do not enforce a schema, meaning documents within a collection can have different structures.
 
 ## 🛠️ CRUD Operations
 
-CRUD stands for:
-
-- **Create**: Add new documents
-- **Read**: Query existing documents
-- **Update**: Modify existing documents
-- **Delete**: Remove documents
-
-🧠 Think of CRUD operations like managing social media posts:
-
-- Create → Publishing a post
-- Read → Viewing posts
-- Update → Editing a post
-- Delete → Deleting a post
-
----
+MongoDB supports the basic CRUD operations: Create, Read, Update, and Delete.
 
 ### 📥 Inserting Documents
 
@@ -53,7 +32,6 @@ db.posts.insertOne({
   tags: ['introduction', 'first'],
   created_at: new Date(),
 });
-// This command inserts a single document into the "posts" collection.
 ```
 
 **Insert Many**
@@ -75,10 +53,7 @@ db.posts.insertMany([
     created_at: new Date(),
   },
 ]);
-// This inserts multiple documents into the "posts" collection.
 ```
-
----
 
 ### 📖 Reading Documents
 
@@ -93,8 +68,6 @@ db.posts.find({ title: 'My First Post' });
 db.posts.find({ tags: 'introduction' });
 ```
 
----
-
 ### 🔄 Updating Documents
 
 ```js
@@ -108,8 +81,6 @@ db.posts.updateOne(
 db.posts.updateMany({ user_id: 1 }, { $addToSet: { tags: 'user1_posts' } });
 ```
 
----
-
 ### 🗑️ Deleting Documents
 
 ```js
@@ -120,59 +91,77 @@ db.posts.deleteOne({ title: 'Updated Title for My First Post' });
 db.posts.deleteMany({ user_id: 1 });
 ```
 
----
+## 🔍 Advanced Queries and Features
 
-## 🔍 Advanced Queries: Aggregation
+### Aggregation
 
-Aggregation is used to process data and return computed results. MongoDB provides powerful aggregation capabilities to perform operations on data and return computed results.
+MongoDB provides powerful aggregation capabilities to perform operations on data and return computed results.
 
 ```js
+// Example: Count the number of posts per user
 db.posts.aggregate([{ $group: { _id: '$user_id', post_count: { $sum: 1 } } }]);
-// This groups posts by user and counts how many posts each user has.
 ```
 
----
+### Text Search
 
-## 🌍 Geospatial Queries
+MongoDB supports text search to find documents that contain specific words.
 
 ```js
-// Insert restaurants with location data
+// Example: Search for posts containing the word "content"
+db.posts.createIndex({ content: 'text' });
+db.posts.find({ $text: { $search: 'content' } });
+```
+
+### Geospatial Queries
+
+Let’s create a new collection called restaurants and perform a geospatial query.
+
+**Creating the restaurants Collection and Inserting Documents**
+
+```js
 db.restaurants.insertMany([
   {
     name: 'Pizza Palace',
     location: { type: 'Point', coordinates: [-73.856077, 40.848447] },
   },
+  {
+    name: 'Burger Barn',
+    location: { type: 'Point', coordinates: [-73.961704, 40.662942] },
+  },
+  {
+    name: 'Taco Town',
+    location: { type: 'Point', coordinates: [-73.982419, 40.579505] },
+  },
 ]);
 
-// Create geospatial index
+// Create a geospatial index on the location field
 db.restaurants.createIndex({ location: '2dsphere' });
+```
 
-// Find nearby restaurants
+**Performing a Geospatial Query**
+
+```js
+// Find restaurants near a specific location (longitude, latitude)
 db.restaurants.find({
   location: {
     $near: {
       $geometry: { type: 'Point', coordinates: [-73.961704, 40.662942] },
-      $maxDistance: 5000,
+      $maxDistance: 5000, // 5 kilometers
     },
   },
 });
 ```
 
----
+## ⚡ High Availability and Scalability
 
-## ⚡ High Availability & Scalability
+### High Availability by Replication
 
-MongoDB ensures:
+Replication: MongoDB achieves high availability through replication. A replica set is a group of MongoDB servers that maintain the same data. If the primary server fails, one of the secondary servers automatically becomes the new primary, ensuring continuous availability.
 
-- **High Availability via Replication**: A _replica set_ contains multiple MongoDB servers with identical data. If the primary server fails, a secondary takes over automatically.
+### Horizontal Scaling
 
-- **Horizontal Scaling via Sharding**: Data is distributed across multiple servers. This helps handle high throughput and large datasets.
-
-**Example analogy:**  
-Social media platforms like Twitter use replication and sharding to handle massive user bases and ensure constant uptime.
-
----
+Horizontal Scaling: MongoDB supports horizontal scaling through sharding. Sharding splits data across multiple servers, or shards, allowing the database to handle large volumes of data and high-throughput operations efficiently.
 
 ## ✅ Conclusion
 
-MongoDB is a powerful NoSQL database that offers flexibility, scalability, and a wide range of features to handle various data needs. By understanding the basics of documents, collections, CRUD operations, and advanced queries, you can start leveraging MongoDB in tandem with an Express-powered API to create fast and scalable applications. You can go deeper with [their official training materials](https://learn.mongodb.com/)
+MongoDB is a powerful NoSQL database that offers flexibility, scalability, and a wide range of features to handle various data needs. By understanding the basics of documents, collections, CRUD operations, and advanced queries, you can start leveraging MongoDB in tandem with an Express-powered API to create fast and scalable applications. You can go deeper with [their official training materials](https://learn.mongodb.com/).
