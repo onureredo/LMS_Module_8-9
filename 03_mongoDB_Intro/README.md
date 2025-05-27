@@ -172,7 +172,7 @@ db.restaurants.find({
   location: {
     $near: {
       $geometry: { type: 'Point', coordinates: [-73.961704, 40.662942] },
-      $maxDistance: 5000, // 5 kilometers
+      $maxDistance: 5000,
     },
   },
 });
