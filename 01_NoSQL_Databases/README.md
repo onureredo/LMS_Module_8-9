@@ -28,9 +28,7 @@ NoSQL (short for "Not Only SQL") refers to a family of databases that offer flex
 | Query Language | SQL                               | Varies by DB (MongoDB, Redis, etc.)               |
 | Best For       | Structured data & complex queries | High volume, unstructured or semi-structured data |
 
----
-
-## 📊 Key Features of NoSQL Databases
+## ⚙️ Key Features of NoSQL Databases
 
 - **Schema flexibility** — You can store different fields in each document.
 - **Horizontal scalability** — Easy to distribute data across many servers.
