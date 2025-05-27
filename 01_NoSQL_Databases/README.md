@@ -54,23 +54,24 @@ NoSQL (short for "Not Only SQL") refers to a family of databases that offer flex
 }
 ```
 
-### 🗝️ Key-Value Stores
+## Types of NoSQL Databases
 
-- Each item is stored as a key and a value.
-- Very fast and simple lookups.
-- 🧪 Example: **Redis**
+There are several types of NoSQL databases. In this course, we'll focus on **document-based databases**, especially **MongoDB**.
 
-### 📊 Column Stores
+### 📄 Document-Based
 
-- Data stored in columns instead of rows (like in SQL).
-- Great for analytics and aggregation queries.
-- 🧪 Example: **Cassandra**
+- Store data as JSON-like documents
+- Schema is flexible — each document can look different
+- Ideal for modern web applications
+- 🧪 Example: **MongoDB**
 
-### 🧭 Graph Databases
+Other NoSQL types include:
 
-- Data stored as nodes and edges.
-- Best for highly interconnected data (e.g. social networks).
-- 🧪 Example: **Neo4j**
+- 🗝️ **Key-Value Stores** – extremely fast, used for caching (e.g. **Redis**)
+- 📊 **Column Stores** – great for analytics (e.g. **Cassandra**)
+- 🧭 **Graph Databases** – good for complex relationships (e.g. **Neo4j**)
+
+> 🧠 We will primarily work with **Document-Based** databases using **MongoDB**. However, knowing the other NoSQL types will give you a broader understanding of modern database systems.
 
 ## 🍃 Why NoSQL? (When to Use)
 
@@ -81,14 +82,14 @@ You might choose a NoSQL database when:
 - You want faster development cycles (no migrations for schema changes)
 - You are working with big data, real-time analytics, or high write loads
 
-## 🧠 Common NoSQL Examples
+<!-- ## 🧠 Common NoSQL Examples
 
 | Database  | Type      | Use Case                                |
 | --------- | --------- | --------------------------------------- |
 | MongoDB   | Document  | Web apps, content management            |
 | Redis     | Key-Value | Caching, real-time data                 |
 | Cassandra | Column    | Analytics at scale                      |
-| Neo4j     | Graph     | Social networks, recommendation engines |
+| Neo4j     | Graph     | Social networks, recommendation engines | -->
 
 ## ✅ Summary
 
