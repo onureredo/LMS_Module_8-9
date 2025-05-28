@@ -1,6 +1,6 @@
 # 🗂️ NoSQL Databases
 
-Welcome to the introduction to NoSQL databases. In this section, we will explore what NoSQL means, how it differs from traditional relational databases, and why it's used in modern web applications.
+Welcome to NoSQL databases. In this section, we will explore what NoSQL means, how it differs from traditional relational databases, and why it's used in modern web applications.
 
 ## From Relational to NoSQL
 
@@ -91,7 +91,7 @@ You might choose a NoSQL database when:
 | Cassandra | Column    | Analytics at scale                      |
 | Neo4j     | Graph     | Social networks, recommendation engines | -->
 
-## ✅ Summary
+## Summary
 
 - NoSQL databases offer a flexible alternative to traditional SQL databases.
 - There are different types of NoSQL databases optimized for different use cases.
