@@ -56,7 +56,7 @@ Even though `tsx` strips types at runtime and runs the JavaScript directly:
 >
 > This checks for TypeScript errors without producing any `.js` output.
 
-## 🧠 Bonus: Automate with `package.json`
+## 🧠 Automate with `package.json`
 
 Instead of typing `npx tsx` every time, you can add a script to your `package.json`:
 
@@ -83,3 +83,39 @@ npm run dev
 ```
 
 > 🔁 The `watch` flag automatically reloads your code whenever you save changes.
+
+## 📄 Optional: Adding a `tsconfig.json` File
+
+Although `tsx` can run TypeScript files without a `tsconfig.json`, adding one gives you more control over how TypeScript behaves.
+
+### 🔍 Why Use a `tsconfig.json`?
+
+- Define how your TypeScript should be compiled
+- Enable strict type-checking options
+- Improve editor support (like autocompletion and linting in VSCode)
+- Better structure and consistency as your project grows
+
+### 📄 Example `tsconfig.json` with Comments
+
+```jsonc
+{
+  "compilerOptions": {
+    "strict": true, // Enable all strict type-checking options
+    "noEmit": true, // Do not output compiled files; useful with tools like tsx
+    "target": "ESNext", // Use the latest JavaScript features
+    "moduleDetection": "force", // Treat all files as modules
+    "module": "Preserve", // Keep import/export syntax as-is (useful for ESM)
+    "resolveJsonModule": true, // Allow importing .json files
+    "esModuleInterop": true, // Enable interoperability between CommonJS and ES Modules
+    "isolatedModules": true, // Ensure each file can be safely transpiled independently
+    "skipLibCheck": true, // Skip type checking of declaration files (*.d.ts)
+    "baseUrl": "./src", // Set base directory for resolving non-relative imports
+    "paths": {
+      "@/*": ["*"] // Alias '@/' to point to 'src/' directory
+    }
+  },
+  "include": ["src"] // Include all files in the 'src' directory
+}
+```
+
+> 🧠 Note: This file is not required for using `tsx`, but it improves type safety and tooling support as your project becomes more complex.
