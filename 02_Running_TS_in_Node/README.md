@@ -84,6 +84,8 @@ npm run dev
 
 > 🔁 The `watch` flag automatically reloads your code whenever you save changes.
 
+---
+
 ## 📄 Optional: Adding a `tsconfig.json` File
 
 Although `tsx` can run TypeScript files without a `tsconfig.json`, adding one gives you more control over how TypeScript behaves.
