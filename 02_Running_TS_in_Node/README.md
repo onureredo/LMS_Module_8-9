@@ -158,10 +158,6 @@ Because we use `"noEmit": true`, it won’t generate `.js` files — it only val
 
 ---
 
-## 📄 Adding a `tsconfig.json` File
-
-Although `tsx` can run TypeScript files without a `tsconfig.json`, adding one gives you more control over how TypeScript behaves.
-
 ## Summary
 
 This guide helps you set up and run TypeScript code directly in Node.js using the `tsx` tool — with no need to compile manually.
