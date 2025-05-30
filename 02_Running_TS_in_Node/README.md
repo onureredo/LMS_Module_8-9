@@ -97,7 +97,7 @@ Although `tsx` can run TypeScript files without a `tsconfig.json`, adding one gi
 - Improve editor support (like autocompletion and linting in VSCode)
 - Better structure and consistency as your project grows
 
-### 📄 Example `tsconfig.json` with Comments
+### 📄 Example `tsconfig.json`
 
 ```jsonc
 {
