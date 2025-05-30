@@ -13,13 +13,7 @@ npm init -y
 ### Runtime Packages
 
 ```bash
-npm install tsx
-```
-
-### Dev Dependencies
-
-```bash
-npm install -D typescript @types/node
+npm install -D typescript tsx @types/node
 ```
 
 - `typescript`: The TypeScript compiler.
@@ -48,21 +42,21 @@ Create a `tsconfig.json` in your root directory:
 ```json
 {
   "compilerOptions": {
-    "strict": true, // Enables all strict type-checking options
-    "noEmit": true, // Do not output files after compilation
-    "target": "ESNext", // Set the JavaScript version to compile to
-    "moduleDetection": "force", // Use ECMAScript module resolution
-    "module": "Preserve", // Keep import/export statements
-    "resolveJsonModule": true, // Allows importing .json files
-    "esModuleInterop": true, // Enables compatibility with CommonJS
-    "isolatedModules": true, // Ensures every file can be safely transpiled
-    "skipLibCheck": true, // Skip type checking of declaration files
-    "baseUrl": "./src", // Base path for module resolution
+    "strict": true,
+    "noEmit": true,
+    "target": "ESNext",
+    "moduleDetection": "force",
+    "module": "Preserve",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "baseUrl": "./src",
     "paths": {
-      "@/*": ["*"] // Shortcut alias for imports
+      "@/*": ["*"]
     }
   },
-  "include": ["src"] // Include only the src folder
+  "include": ["src"]
 }
 ```
 
@@ -72,17 +66,9 @@ Edit your `package.json`:
 
 ```json
 {
-  "name": "ts-node-setup",
-  "version": "1.0.0",
-  "type": "module",
   "scripts": {
-    "type-check": "tsc --noEmit",
+    "type-check": "tsc",
     "dev": "tsx watch src/index.ts"
-  },
-  "devDependencies": {
-    "@types/node": "^22.15.19",
-    "tsx": "^4.19.4",
-    "typescript": "^5.8.3"
   }
 }
 ```
@@ -92,16 +78,3 @@ Then run:
 ```bash
 npm run dev
 ```
-
-## ❓ Why use `tsx`?
-
-Normally, you'd have to do:
-
-```bash
-tsc src/index.ts     # Compiles to index.js
-node src/index.js    # Then run the JS
-```
-
-But `tsx` does type-stripping and lets you run `.ts` files directly — no build step needed. It's perfect for development.
-
-> 💡 You can’t catch TypeScript errors at runtime. So always rely on your IDE (like VSCode) and `tsc` to show type errors beforehand.
