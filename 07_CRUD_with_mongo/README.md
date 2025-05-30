@@ -77,4 +77,4 @@ npm run dev
 
 ---
 
-> Next step: connect to MongoDB and implement basic CRUD operations.
+## ⚙️ Step 2: Connect to MongoDB
