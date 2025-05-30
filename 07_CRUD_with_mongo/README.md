@@ -87,7 +87,7 @@ Now that our TypeScript + Node.js setup is complete, let's connect to MongoDB us
 npm install mongoose
 ```
 
-## ⚙️ Update `dev` Script for .env Support
+### ⚙️ Update `dev` Script for .env Support
 
 To use environment variables from a `.env` file, modify your `package.json` like this:
 
