@@ -1,0 +1,19 @@
+{
+  "name": "07_crud_with_mongo",
+  "version": "1.0.0",
+  "description": "Before diving into database operations, let's start with a basic TypeScript + Node.js setup to create a clean environment for our future MongoDB CRUD logic.",
+  "main": "index.js",
+  "scripts": {
+    "type-check": "tsc",
+    "dev": "tsx watch src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/node": "^22.15.27",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}
