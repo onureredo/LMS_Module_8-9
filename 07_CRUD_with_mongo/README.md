@@ -77,4 +77,58 @@ npm run dev
 
 ---
 
-## ⚙️ Step 2: Connect to MongoDB
+## 🧩 Step 2: Connect to MongoDB
+
+Now that our TypeScript + Node.js setup is complete, let's connect to MongoDB using the `mongoose` library.
+
+### 📦 Install Mongoose
+
+```bash
+npm install mongoose
+```
+
+## ⚙️ Update `dev` Script for .env Support
+
+To use environment variables from a `.env` file, modify your `package.json` like this:
+
+```json
+"scripts": {
+  "type-check": "tsc",
+  "dev": "tsx watch --env-file=.env src/index.ts"
+}
+```
+
+> ✅ The `--env-file=.env` flag ensures that your environment variables are loaded during development.
+
+### 🗂️ Create a `.env` File
+
+In the root of your project, create a `.env` file:
+
+```
+MONGO_URI=mongodb+srv://your_username:your_password@your_cluster.mongodb.net/your_db
+```
+
+> 🛑 Do **not** commit `.env` to your repository. Add it to `.gitignore`.
+
+### 📁 Create the Database Connection File
+
+In `src/db.ts`, add the following code:
+
+```ts
+import mongoose from 'mongoose';
+const MONGO_URI = process.env.MONGO_URI || '';
+
+(async () => {
+  try {
+    await mongoose.connect(MONGO_URI);
+    console.log('✅ Connected to MongoDB');
+  } catch (err) {
+    console.error('❌ MongoDB connection error:', err);
+    process.exit(1);
+  }
+})();
+```
+
+> 💡 This script ensures your app exits if the connection fails, helping you catch issues early.
+
+Ready? Next, we’ll create our first schema and do some CRUD operations! ✅
