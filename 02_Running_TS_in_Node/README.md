@@ -2,13 +2,17 @@
 
 To run a `.ts` file directly in Node.js without compiling it manually, we will use a tool called [**tsx**](https://tsx.is/getting-started).
 
-## 📦 Step 1: Install `tsx`
+## 📦 Step 1: Install Dependencies
 
 ```bash
-npm install -D tsx
+npm install -D typescript tsx @types/node
 ```
 
-> `-D` means it's a dev dependency — only needed during development.
+- `typescript`: The TypeScript compiler
+- `tsx`: Run TypeScript directly without building
+- `@types/node`: Type definitions so TypeScript understands Node.js APIs
+
+> `-D` marks them as development-only dependencies.
 
 ## 🛠️ Step 2: Create a Simple TypeScript File
 
@@ -58,7 +62,7 @@ Even though `tsx` strips types at runtime and runs the JavaScript directly:
 
 ## 🧠 Automate with `package.json`
 
-Instead of typing `npx tsx` every time, you can add a script to your `package.json`:
+Instead of typing `npx tsx` and `npx tsc` every time, you can add a script to your `package.json`:
 
 ### 📄 Example `package.json`
 
@@ -68,10 +72,8 @@ Instead of typing `npx tsx` every time, you can add a script to your `package.js
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "type-check": "tsc",
     "dev": "tsx watch index.ts"
-  },
-  "devDependencies": {
-    "tsx": "^4.0.0"
   }
 }
 ```
@@ -82,15 +84,21 @@ Then run your app with:
 npm run dev
 ```
 
+and type check with:
+
+```bash
+npm run type-check
+```
+
 > 🔁 The `watch` flag automatically reloads your code whenever you save changes.
 
 ---
 
-## 📄 Optional: Adding a `tsconfig.json` File
+## 📄 Adding a `tsconfig.json` File
 
 Although `tsx` can run TypeScript files without a `tsconfig.json`, adding one gives you more control over how TypeScript behaves.
 
-### 🔍 Why Use a `tsconfig.json`?
+### ❓ Why Use a `tsconfig.json`?
 
 - Define how your TypeScript should be compiled
 - Enable strict type-checking options
@@ -120,4 +128,69 @@ Although `tsx` can run TypeScript files without a `tsconfig.json`, adding one gi
 }
 ```
 
-> 🧠 Note: This file is not required for using `tsx`, but it improves type safety and tooling support as your project becomes more complex.
+## ❓ Why Do We Need `@types/node`?
+
+TypeScript doesn't know about built-in Node.js features by default. Without `@types/node`, you'll see errors like:
+
+```ts
+console.log(process.env.NODE_ENV); // ❌ Error: Cannot find name 'process'
+```
+
+Installing `@types/node` gives TypeScript full awareness of Node-specific globals like:
+
+- `process`, `__dirname`, `global`
+- Built-in modules like `fs`, `path`, `http`, etc.
+
+✅ It ensures your code can be type-checked properly in a Node environment and improves developer experience in your IDE.
+
+## ❓ What Does `type-check` Do?
+
+The `type-check` script runs:
+
+```bash
+tsc
+```
+
+This uses your `tsconfig.json` file and checks for any type errors across your project.  
+Because we use `"noEmit": true`, it won’t generate `.js` files — it only validates types.
+
+> 💡 You can use this script before commits or deployments to catch bugs early.
+
+---
+
+## 📄 Adding a `tsconfig.json` File
+
+Although `tsx` can run TypeScript files without a `tsconfig.json`, adding one gives you more control over how TypeScript behaves.
+
+## Summary
+
+This guide helps you set up and run TypeScript code directly in Node.js using the `tsx` tool — with no need to compile manually.
+
+### Installed Packages
+
+```bash
+npm install -D typescript tsx @types/node
+```
+
+- `typescript`: TypeScript compiler for type-checking
+- `tsx`: Runs TypeScript files instantly, stripping types on the fly
+- `@types/node`: Enables awareness of Node.js built-in features (like `process`, `fs`, etc.)
+
+### 🛠️ File Structure Example
+
+```bash
+my-ts-app/
+├── package.json
+├── tsconfig.json
+└── src/
+    └── index.ts
+```
+
+### 🔧 Scripts in `package.json`
+
+```json
+"scripts": {
+  "type-check": "tsc",
+  "dev": "tsx watch src/index.ts"
+}
+```
