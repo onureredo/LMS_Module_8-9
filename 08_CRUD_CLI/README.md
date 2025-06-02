@@ -128,11 +128,13 @@ Example commands:
 npm run dev create John Doe 30
 npm run dev read
 npm run dev get <id>
-npm run dev update <id> New First New Last 99
+npm run dev update <id> Jane Doe 30
 npm run dev delete <id>
 ```
 
-## Step 4: Implementing `crud.ts`
+> 💡You'll see full implementation of these steps in this repo.
+
+<!-- ## Step 4: Implementing `crud.ts`
 
 In `crud.ts`, we’ll use three core Node.js modules — no need to install anything extra:
 
@@ -278,7 +280,7 @@ export function deleteUser(id: string): boolean {
 
 Deletes the user by ID and returns whether the operation succeeded.
 
-🎉 That’s it!  
+🎉 That’s it!
 Your `crud.ts` module is now complete, and you can start using these operations in your CLI script (`cli.ts`) in the next step.
 
 ## Step 5: CLI Command Handling
@@ -336,10 +338,4 @@ npm run dev delete 1
 # 🗑️ User deleted
 ```
 
-### Summary
-
-- CLI logic is separated into its own file for clarity.
-- Each command-line instruction is parsed and handled cleanly.
-- Prepares students to later swap this CLI with real HTTP routes using Express.
-
-You can now test your CRUD system entirely from the terminal!
+> 💡 You can now test your CRUD system entirely from the terminal! -->
