@@ -1,4 +1,4 @@
-# TypeScript + Node.JS Setup
+# TypeScript + NodeJS Setup
 
 Before diving into database operations, let's start with a basic TypeScript + Node.JS setup to create a clean environment for our future MongoDB CRUD logic.
 
@@ -224,34 +224,3 @@ export async function deleteBook(id: string) {
   return { message: 'Book deleted successfully' };
 }
 ```
-
----
-
-## 🧠 Why No `req`, `res`, `next`?
-
-We're **not using Express or any HTTP framework yet**.
-
-- `req`, `res`, `next` are part of Express — used inside route handlers.
-- Here, we're building logic with plain functions.
-- This allows testing logic independently without a server.
-
-### 🧪 Example usage (in `index.ts` or test file):
-
-```ts
-import { getAllBooks } from './controllers/bookController';
-
-(async () => {
-  try {
-    const books = await getAllBooks();
-    console.log(books);
-  } catch (error) {
-    console.error(error);
-  }
-})();
-```
-
----
-
-✅ Later, when we add Express, these functions can be directly used inside route handlers with `req`, `res`, and `next`.
-
-Until then, they serve as the "business logic" layer of our app.
