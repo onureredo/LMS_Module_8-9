@@ -140,4 +140,4 @@ npm run dev update <id> New First New Last 99
 npm run dev delete <id>
 ```
 
-> You’ll see full implementation of these steps in this repo.
+> 💡 You’ll see full implementation of these steps in this repo.
