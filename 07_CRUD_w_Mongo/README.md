@@ -23,8 +23,6 @@ It’s perfect for projects where you want a user-friendly and scalable terminal
 
 > 💡 For full setup instructions, revisit: [Running TypeScript in Node](https://www.notion.so/Running-TS-in-Node-1faae18bcb5480ad89d8fc54b1a84f85?pvs=21)
 
----
-
 ## **📦 Setup**
 
 ```bash
@@ -42,19 +40,15 @@ MONGO_URI=mongodb+srv://your_username:your_password@your_cluster.mongodb.net/you
 
 > 🛑 Do not commit `.env` to your repository. Add it to `.gitignore`.
 
----
-
 ## **📄 Scripts in `package.json`**
 
 ```json
-"scripts": {
-  "type-check": "tsc",
-  "dev": "tsx watch --env-file=.env src/app.ts",
-  "start": "tsx src/app.ts"
-}
+  "scripts": {
+    "type-check": "tsc",
+    "dev": "tsx watch --env-file=.env src/app.ts",
+    "start": "tsx --env-file=.env src/app.ts"
+  },
 ```
-
----
 
 ## **📁 Project Structure**
 
@@ -69,8 +63,6 @@ MONGO_URI=mongodb+srv://your_username:your_password@your_cluster.mongodb.net/you
     ├── 📄 db.ts         # MongoDB connection logic
     └── 📄 app.ts        # CLI logic using commander
 ```
-
----
 
 ## **📄 src/db.ts**
 
@@ -92,8 +84,6 @@ const client = new MongoClient(MONGO_URI);
 
 export const db = client.db('ecommerce');
 ```
-
----
 
 ## **📄 src/app.ts (using Commander)**
 
@@ -190,8 +180,6 @@ program
 // Parse CLI arguments
 program.parse();
 ```
-
----
 
 ## **🧪 Example Command Structure**
 
