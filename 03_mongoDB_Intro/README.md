@@ -21,7 +21,25 @@ Welcome to our introductory lecture on MongoDB. MongoDB is a popular NoSQL datab
 
 MongoDB supports the basic CRUD operations: Create, Read, Update, and Delete.
 
-## 📥 CREATE — Inserting Documents
+### 🔤 Common MongoDB Query Operators
+
+Here are some of the most frequently used operators in MongoDB queries:
+
+| Operator    | Meaning                       | Example Use                                       |
+| ----------- | ----------------------------- | ------------------------------------------------- |
+| `$gt`       | Greater than                  | `{ price: { $gt: 20 } }`                          |
+| `$lt`       | Less than                     | `{ stock: { $lt: 10 } }`                          |
+| `$gte`      | Greater than or equal to      | `{ price: { $gte: 10 } }`                         |
+| `$lte`      | Less than or equal to         | `{ stock: { $lte: 5 } }`                          |
+| `$set`      | Set/overwrite a field         | `{ $set: { stock: 100 } }`                        |
+| `$addToSet` | Add to array if not present   | `{ $addToSet: { tags: 'new' } }`                  |
+| `$in`       | Match any value in an array   | `{ tags: { $in: ['sale', 'new'] } }`              |
+| `$regex`    | Pattern matching (regex)      | `{ name: { $regex: 'shirt' } }`                   |
+| `$group`    | Group documents for aggregate | `{ $group: { _id: '$tag', count: { $sum: 1 } } }` |
+
+> 💡 These operators help you write powerful and flexible queries in MongoDB. You'll encounter them often in real-world applications.
+
+## 📥 CREATE
 
 **Insert One**
 
