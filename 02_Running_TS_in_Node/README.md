@@ -107,7 +107,7 @@ Although `tsx` can run TypeScript files without a `tsconfig.json`, adding one gi
 
 ### 📄 Example `tsconfig.json`
 
-```jsonc
+```json
 {
   "compilerOptions": {
     "strict": true, // Enable all strict type-checking options

@@ -1,5 +1,5 @@
 {
-  "name": "07_crud_w_mongo",
+  "name": "13_crud_cli_refactor",
   "version": "1.0.0",
   "main": "src/app.ts",
   "type": "module",
@@ -15,8 +15,8 @@
   "dependencies": {
     "@types/node": "^24.0.0",
     "commander": "^14.0.0",
-    "mongodb": "^6.17.0",
-    "tsx": "^4.19.4",
+    "mongoose": "^8.15.1",
+    "tsx": "^4.20.1",
     "typescript": "^5.8.3"
   }
 }
