@@ -111,7 +111,10 @@ You can define schemas inside other schemas:
 
 ```ts
 const cartSchema = new Schema({
-  userId: { type: Schema.Types.ObjectId, ref: 'User' },
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+  },
   items: [
     {
       productId: {
