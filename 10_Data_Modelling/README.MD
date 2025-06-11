@@ -201,41 +201,63 @@ const user: HydratedDocument<IUser> = new UserModel({
 });
 ```
 
-## 🗂️ Realistic Modelling Example
+## 🧪 Putting It All Together
+
+In many real-world applications, we will often need to define multiple related models like users, products, and orders.
+
+Now let's combine everything into a realistic example involving multiple models that interact with each other such as users placing orders that contain products.
 
 ```ts
-// User
-const userSchema = new Schema({
-  name: String,
-  email: String,
+import { Schema, model, Types, Document } from 'mongoose';
+
+// Interfaces
+interface IUser extends Document {
+  name: string;
+  email: string;
+}
+
+interface IProduct extends Document {
+  name: string;
+  price: number;
+}
+
+interface IOrderItem {
+  product: Types.ObjectId;
+  quantity: number;
+}
+
+interface IOrder extends Document {
+  user: Types.ObjectId;
+  items: IOrderItem[];
+  createdAt: Date;
+}
+
+// Schemas
+const userSchema = new Schema<IUser>({
+  name: { type: String, required: true },
+  email: { type: String, required: true },
 });
 
-// Product
-const productSchema = new Schema({
-  name: String,
-  price: Number,
+const productSchema = new Schema<IProduct>({
+  name: { type: String, required: true },
+  price: { type: Number, required: true },
 });
 
-// Order
-const orderSchema = new Schema({
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-  },
+const orderSchema = new Schema<IOrder>({
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   items: [
     {
-      product: {
-        type: Schema.Types.ObjectId,
-        ref: 'Product',
-      },
-      quantity: Number,
+      product: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
+      quantity: { type: Number, required: true },
     },
   ],
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+  createdAt: { type: Date, default: Date.now },
 });
+
+// Models
+export const UserModel = model<IUser>('User', userSchema);
+export const ProductModel = model<IProduct>('Product', productSchema);
+export const OrderModel = model<IOrder>('Order', orderSchema);
 ```
 
 ---
