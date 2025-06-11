@@ -1,341 +1,199 @@
-## CRUD CLI
+# **🧩 CRUD CLI with TypeScript + MongoDB**
 
-In this guide, we will build a basic **TypeScript + Node.js** command-line application that mimics **CRUD operations** without using a database. Instead, we will use the local file system to store and manage data.
+## 🎯 Goal
 
-This will help you understand:
+Build a complete CLI tool using **TypeScript** and **MongoDB** to perform full CRUD operations like Create, Read, Update, and Delete on an eCommerce-style product list.
 
-- How to run and organize TypeScript projects with Node.js
-- How Node's `fs`, `path`, and `process.argv` work
+This project teaches you how to:
 
----
+- Run TypeScript files in Node.js
+- Connect to a MongoDB database
+- Perform database operations from the terminal
+- Handle command-line arguments using `commander`
 
-## ⚙️ Step 1: Initialize the Project
+## 💡 What is Commander?
 
-### 📁 Create a New Project Directory
+[`commander`](https://www.npmjs.com/package/commander) is a popular and lightweight Node.js library used for building command-line interfaces. It helps you:
 
-```bash
-mkdir crud-cli-ts
-cd crud-cli-ts
-```
+- Parse and validate CLI arguments easily
+- Structure commands and subcommands clearly
+- Add descriptions, help text, and default values for a better CLI experience
 
-### 🛠️ Initialize npm
+It’s perfect for projects where you want a user-friendly and scalable terminal tool.
+
+> 💡 For full setup instructions, revisit: [Running TypeScript in Node](https://www.notion.so/Running-TS-in-Node-1faae18bcb5480ad89d8fc54b1a84f85?pvs=21)
+
+## **📦 Setup**
 
 ```bash
 npm init -y
+npm install tsx typescript @types/node mongodb commander
 ```
 
-### 📦 Install Required Dev Dependencies
+## **🗂️ Create a `.env` File**
 
-```bash
-npm install -D typescript tsx @types/node
+In the root of your project, create a `.env` file:
+
+```env
+MONGO_URI=mongodb+srv://your_username:your_password@your_cluster.mongodb.net/your_db
 ```
 
-- `typescript`: The TypeScript compiler
-- `@types/node`: Provides type definitions for Node.js modules (like `fs`, `path`)
-- `tsx`: Allows us to run `.ts` files directly without building them first
+> 🛑 Do not commit `.env` to your repository. Add it to `.gitignore`.
 
-## Step 2: Setup Project Structure and Config
-
-### 📁 Create the Folder Structure
-
-```bash
-mkdir src
-cd src
-```
-
-Create two files:
-
-```bash
-touch cli.ts crud.ts
-```
-
-### 📄 Add TypeScript Configuration
-
-In the root directory, create a `tsconfig.json`:
+## **📄 Scripts in `package.json`**
 
 ```json
-{
-  "compilerOptions": {
-    "strict": true,
-    "noEmit": true,
-    "target": "ESNext",
-    "module": "Preserve",
-    "moduleDetection": "force",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "skipLibCheck": true,
-    "baseUrl": "./src",
-    "paths": {
-      "@/*": ["*"]
-    }
+  "scripts": {
+    "type-check": "tsc",
+    "dev": "tsx watch --env-file=.env src/app.ts",
+    "start": "tsx --env-file=.env src/app.ts"
   },
-  "include": ["src"],
-  "types": ["node"]
-}
 ```
 
-### 🏃 Add `package.json` Scripts
-
-```json
-"scripts": {
-  "type-check": "tsc",
-  "dev": "tsx src/cli.ts"
-}
-```
-
-## 📦 Step 3: File System Setup
-
-We will now write logic to **read/write users** from a JSON file using Node's built-in `fs` and `path` modules.
-
-### ❓ What are `fs` and `path`?
-
-- `fs` (File System): Built-in Node.js module to read, write, update files
-- `path`: Helps us work with file and folder paths safely
-
-You **don’t need to install** these — they come with Node.js.
-
-### 🧩 Example `crud.ts` Logic
-
-We will write reusable functions like:
-
-- `createUser`
-- `listUsers`
-- `getUserById`
-- `updateUser`
-- `deleteUser`
-
-Each user will be stored as an object in a JSON file:
-
-```ts
-{
-  id: string;
-  firstName: string;
-  lastName: string;
-  age: number;
-}
-```
-
-We use `randomUUID()` from Node's `crypto` module to generate unique IDs.
-
-## Command Line Logic in `cli.ts`
-
-We parse arguments using `process.argv` and run appropriate logic from `crud.ts`.
-
-Example commands:
+## **📁 Project Structure**
 
 ```bash
-npm run dev create John Doe 30
-npm run dev read
-npm run dev get <id>
-npm run dev update <id> Jane Doe 30
-npm run dev delete <id>
+📁 project-root/
+├── 📁 node_modules/     # Installed dependencies (ignored by Git)
+├── 📄 .env              # Environment variables (e.g. MongoDB URI)
+├── 📄 .gitignore        # Files/folders to exclude from Git
+├── 📄 package.json      # Project metadata and scripts
+├── 📄 tsconfig.json     # TypeScript configuration
+└── 📁 src/
+    ├── 📄 db.ts         # MongoDB connection logic
+    └── 📄 app.ts        # CLI logic using commander
 ```
 
-> 💡You'll see full implementation of these steps in this repo.
-
-<!-- ## Step 4: Implementing `crud.ts`
-
-In `crud.ts`, we’ll use three core Node.js modules — no need to install anything extra:
+## **📄 src/db.ts**
 
 ```ts
-import fs from 'fs'; // To read/write files
-import path from 'path'; // To build file paths
-import { randomUUID } from 'crypto'; // To generate unique user IDs
-```
+import { MongoClient } from 'mongodb';
 
-These are built-in to Node.js, so no additional packages are required.
+const MONGO_URI = process.env.MONGO_URI || '';
+const client = new MongoClient(MONGO_URI);
 
-### ✨ User Type
-
-Let’s define the shape of our user:
-
-```ts
-export type User = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  age: number;
-};
-```
-
-### 🗂️ File Path Setup
-
-We want to store users inside a JSON file under `src/data/users.json`. Here’s how we prepare the path:
-
-```ts
-const filePath = path.join(__dirname, 'data', 'users.json');
-```
-
-### 📦 Ensuring File Existence
-
-If the `users.json` file or folder doesn’t exist, we create them:
-
-```ts
-function ensureFileExists() {
-  if (!fs.existsSync(filePath)) {
-    fs.mkdirSync(path.dirname(filePath));
-    fs.writeFileSync(filePath, '[]');
+(async () => {
+  try {
+    await client.connect();
+    console.log('✅ Connected to MongoDB');
+  } catch (err) {
+    console.error('❌ MongoDB connection error:', err);
+    process.exit(1);
   }
-}
+})();
+
+export const db = client.db('ecommerce');
 ```
 
-We use `mkdirSync` to make sure the parent folder exists, and `writeFileSync` to create an empty array (`[]`) inside the JSON file.
-
-### 📥 Read Users
+## **📄 src/app.ts (using Commander)**
 
 ```ts
-function readUsers(): User[] {
-  ensureFileExists();
-  const data = fs.readFileSync(filePath, 'utf-8');
-  return JSON.parse(data);
-}
+import { Command } from 'commander';
+import { db } from './db';
+
+// Initialize the CLI program
+const program = new Command();
+program
+  .name('ecommerce-cli')
+  .description('Simple product CRUD CLI')
+  .version('1.0.0');
+
+// CREATE — Add a new product
+program
+  .command('add')
+  .description('Add a new product')
+  .argument('<name>', 'Product name')
+  .argument('<stock>', 'Stock quantity')
+  .argument('<price>', 'Product price')
+  .action(async (name, stockStr, priceStr) => {
+    const stock = parseInt(stockStr);
+    const price = parseFloat(priceStr);
+
+    // Insert the new product into the database
+    await db.collection('products').insertOne({
+      name,
+      stock,
+      price,
+      created_at: new Date(),
+    });
+
+    console.log(`✅ Added: ${name} (${stock} pcs at $${price})`);
+  });
+
+// READ — List all products
+program
+  .command('list')
+  .description('List all products')
+  .action(async () => {
+    const products = await db.collection('products').find().toArray();
+
+    console.log('📦 Products:');
+    products.forEach((p, i) =>
+      console.log(`${i + 1}. ${p.name} — ${p.stock} pcs — $${p.price}`)
+    );
+  });
+
+// UPDATE — Update an existing product
+program
+  .command('update')
+  .description('Update product by name')
+  .argument('<name>', 'Product name')
+  .argument('<stock>', 'New stock quantity')
+  .argument('<price>', 'New product price')
+  .action(async (name, stockStr, priceStr) => {
+    const stock = parseInt(stockStr);
+    const price = parseFloat(priceStr);
+
+    const result = await db.collection('products').updateOne(
+      { name }, // Match by product name
+      {
+        $set: {
+          stock,
+          price,
+          updated_at: new Date(),
+        },
+      }
+    );
+
+    if (result.matchedCount) {
+      console.log(`🔁 Updated: ${name} to ${stock} pcs at $${price}`);
+    } else {
+      console.log('⚠️ Product not found.');
+    }
+  });
+
+// DELETE — Remove a product
+program
+  .command('delete')
+  .description('Delete product by name')
+  .argument('<name>', 'Product name')
+  .action(async (name) => {
+    const result = await db.collection('products').deleteOne({ name });
+
+    if (result.deletedCount) {
+      console.log(`🗑️ Deleted: ${name}`);
+    } else {
+      console.log('⚠️ Product not found.');
+    }
+  });
+
+// Parse CLI arguments
+program.parse();
 ```
 
-Reads the file content, parses the JSON, and returns an array of users.
-
-### 📤 Write Users
-
-```ts
-function writeUsers(users: User[]): void {
-  fs.writeFileSync(filePath, JSON.stringify(users, null, 2));
-}
-```
-
-Writes a formatted user array back into the file (`null, 2` adds nice indentation for readability).
-
-### ✅ Create a User
-
-```ts
-export function createUser(
-  firstName: string,
-  lastName: string,
-  age: number
-): User {
-  const users = readUsers();
-  const newUser: User = {
-    id: randomUUID(),
-    firstName,
-    lastName,
-    age,
-  };
-  users.push(newUser);
-  writeUsers(users);
-  return newUser;
-}
-```
-
-We generate a unique `id` using `randomUUID`, and append the new user to the list.
-
-### 📚 List All Users
-
-```ts
-export function listUsers(): User[] {
-  return readUsers();
-}
-```
-
-Simply returns all stored users.
-
-### 🔍 Get a User by ID
-
-```ts
-export function getUserById(id: string): User | undefined {
-  return readUsers().find((user) => user.id === id);
-}
-```
-
-Searches for a user by their `id`.
-
-### 🔁 Update a User
-
-```ts
-export function updateUser(
-  id: string,
-  updatedData: Partial<Omit<User, 'id'>>
-): User | null {
-  const users = readUsers();
-  const index = users.findIndex((user) => user.id === id);
-  if (index === -1) return null;
-
-  users[index] = { ...users[index], ...updatedData };
-  writeUsers(users);
-  return users[index];
-}
-```
-
-Allows partial updates — for example, just updating a first name is enough.
-
-### 🗑️ Delete a User
-
-```ts
-export function deleteUser(id: string): boolean {
-  const users = readUsers();
-  const filtered = users.filter((user) => user.id !== id);
-  if (filtered.length === users.length) return false;
-  writeUsers(filtered);
-  return true;
-}
-```
-
-Deletes the user by ID and returns whether the operation succeeded.
-
-🎉 That’s it!
-Your `crud.ts` module is now complete, and you can start using these operations in your CLI script (`cli.ts`) in the next step.
-
-## Step 5: CLI Command Handling
-
-In this step, we move from simple function calls to a command-line interface (CLI) experience using `process.argv`. This allows users to interact with our CRUD functions directly from the terminal.
-
-### 🎯 Goal
-
-Make the `crud.ts` logic accessible through CLI by implementing command parsing in `cli.ts`.
-
-### 📁 File Structure
-
-```
-src/
-├── crud.ts     # Contains all CRUD functions
-└── cli.ts      # Parses CLI input and calls the appropriate CRUD function
-```
-
-### 📄 `cli.ts` Overview
-
-This file reads the user input from the terminal (using `process.argv`), interprets it, and then calls the corresponding function from `crud.ts`.
-
-We use:
-
-- `process.argv`: A built-in Node.js array that contains command-line arguments.
-- Basic `switch` logic to route commands.
-
-### 📦 Commands Supported
+## **🧪 Example Command Structure**
 
 ```bash
-npm run dev create John Doe 30         # ➕ Adds a new user
-npm run dev read                       # 📄 Lists all users
-npm run dev get <id>                   # 🔍 Get a single user by ID
-npm run dev update <id> New Name 25    # 🔁 Updates a user
-npm run dev delete <id>                # 🗑️ Deletes a user
+npm run start <operation> <product name> <stock> <price>
 ```
 
-### 🚀 Example
+## ✅ Summary
 
-```bash
-npm run dev create John Doe 30
-# ✅ Created: { id: '...', firstName: 'John', lastName: 'Doe', age: 30 }
+With this CLI tool, you can:
 
-npm run dev read
-# 📄 All Users:
-# 1: John Doe (30)
+- Add new products: `npm run start add "T-Shirt" 50 19.99`
+- List all products: `npm run start list`
+- Update a product: `npm run start update "T-Shirt" 25 14.99`
+- Delete a product: `npm run start delete "T-Shirt"`
 
-npm run dev get 1
-# 🔍 Found: { id: '1', firstName: 'John', lastName: 'Doe', age: 30 }
-
-npm run dev update 1 Jane Doe 29
-# 🔁 Updated: { id: '1', firstName: 'Jane', lastName: 'Doe', age: 28 }
-
-npm run dev delete 1
-# 🗑️ User deleted
-```
-
-> 💡 You can now test your CRUD system entirely from the terminal! -->
+🧠 You now have a fully functional CLI tool with `commander` and MongoDB.
