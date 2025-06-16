@@ -218,10 +218,10 @@ program.parse();
 ## **Example Usage**
 
 ```bash
-npm run start add "T-Shirt" 50 19.99
-npm run start list
-npm run start update "T-Shirt" 25 14.99
-npm run start delete "T-Shirt"
+npm start add "T-Shirt" 50 19.99
+npm start list
+npm start update "T-Shirt" 25 14.99
+npm start delete "T-Shirt"
 ```
 
 Now we have a full-featured CLI app using Commander, Mongoose, and TypeScript with clean modular structure and schema validation.

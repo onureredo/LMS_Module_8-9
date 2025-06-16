@@ -33,8 +33,6 @@ MongoDB Shell is useful for quick testing, but lacks structure, validation, and 
     │   └── 📄 delete.ts        # Delete documents (deleteOne, deleteMany)
 ```
 
----
-
 ## ⚙️ Setup
 
 ### 📦 Required NPM Packages
@@ -246,10 +244,19 @@ console.log('🧹 Deleted all out-of-stock products');
 process.exit();
 ```
 
+## **Example Usage**
+
+```bash
+npm run create     # ➕ Insert sample products into the database
+npm run read       # 🔍 Query products (by tag, stock, or price range)
+npm run update     # 🔄 Update product stock or tags
+npm run delete     # 🗑️ Delete specific or all products
+```
+
 ## 🏁 Outcome
 
 By completing this exercise, you will:
 
 - Learn how to **migrate MongoDB Shell logic into an actual Node.js project**
 - Understand **schema-based development** using Mongoose
-- Practice all CRUD operations
+- Practice CRUD operations
