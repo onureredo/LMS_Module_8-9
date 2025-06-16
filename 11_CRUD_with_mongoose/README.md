@@ -27,7 +27,7 @@ MongoDB Shell is useful for quick testing, but lacks structure, validation, and 
     ├── 📁 models
     │   └── 📄 product.model.ts # Mongoose model definition
     ├── 📁 controllers
-    │   ├── 📄 seed.ts          # Create documents (insertOne, insertMany)
+    │   ├── 📄 create.ts        # Create documents (insertOne, insertMany)
     │   ├── 📄 read.ts          # Read documents (find)
     │   ├── 📄 update.ts        # Update documents (updateOne, updateMany)
     │   └── 📄 delete.ts        # Delete documents (deleteOne, deleteMany)
