@@ -1,7 +1,7 @@
 {
-  "name": "13_crud_cli_refactor",
+  "name": "12_crud_cli_refactor",
   "version": "1.0.0",
-  "main": "src/app.ts",
+  "main": "app.ts",
   "type": "module",
   "scripts": {
     "type-check": "tsc",

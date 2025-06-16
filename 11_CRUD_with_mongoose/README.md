@@ -1,41 +1,60 @@
-# TypeScript + NodeJS Setup
+# 🧩 CRUD Operations with Mongoose
 
-Before diving into database operations, let's start with a basic TypeScript + Node.JS setup to create a clean environment for our future MongoDB CRUD logic.
+## 🎯 Goal
 
-## ⚙️ Step 1: Initialize the Project
+A TypeScript rewrite of the previous MongoDB Shell exercise using Mongoose, with basic schemas and type-safe file organization.
 
-```bash
-npm init -y
-```
+## 🧠 Why Mongoose?
 
-### 📦 Install Required Packages
+MongoDB Shell is useful for quick testing, but lacks structure, validation, and reusability. Mongoose gives us:
 
-```bash
-npm install -D typescript tsx @types/node
-```
+- **Schemas** for consistent data shape
+- **Type safety** with TypeScript
+- **Validation and defaults**
+- **Auto timestamps** (`createdAt`, `updatedAt`)
+- **Better maintainability** in applications
 
-- `typescript`: The TypeScript compiler.
-- `@types/node`: Provides type definitions for Node.js modules like `fs`, `path`, etc.
-- `tsx`: Allows running `.ts` files directly without pre-compiling.
-
-### 📁 Create the Project Structure
+## 📁 Folder Structure
 
 ```bash
-mkdir src
-cd src
-touch index.ts
+📁 project-root
+├── .env
+├── package.json
+├── tsconfig.json
+└── 📁 src
+    ├── 📄 app.ts               # Entry point
+    ├── 📄 db.ts                # MongoDB connection logic
+    ├── 📁 models
+    │   └── 📄 product.model.ts # Mongoose model definition
+    ├── 📁 controllers
+    │   ├── 📄 seed.ts          # Create documents (insertOne, insertMany)
+    │   ├── 📄 read.ts          # Read documents (find)
+    │   ├── 📄 update.ts        # Update documents (updateOne, updateMany)
+    │   └── 📄 delete.ts        # Delete documents (deleteOne, deleteMany)
 ```
 
-Write something basic in `src/index.ts`:
+---
 
-```ts
-const message: string = 'Hello, TypeScript + Node.js';
-console.log(message);
+## ⚙️ Setup
+
+### 📦 Required NPM Packages
+
+To set up the project environment, install the following dependencies:
+
+```bash
+npm install mongoose               # → ✅ required at runtime
+npm install -D tsx @types/node     # → 🛠️ used only during development
 ```
 
-### 🔧 Add a TypeScript Config File
+### `.env`
 
-Create a `tsconfig.json` in your root directory:
+```
+MONGO_URI=mongodb+srv://<your_user>:<your_pass>@cluster.mongodb.net/test
+```
+
+> Note: No need to install `dotenv`, `tsx` loads `.env` automatically.
+
+### `tsconfig.json`
 
 ```json
 {
@@ -58,64 +77,23 @@ Create a `tsconfig.json` in your root directory:
 }
 ```
 
-### 🚀 Run the App with `npm script`
-
-Edit your `package.json`:
-
-```json
-  "scripts": {
-    "type-check": "tsc",
-    "dev": "tsx watch src/index.ts"
-  },
-```
-
-Then run:
-
-```bash
-npm run dev
-```
-
----
-
-## 🧩 Step 2: Connect to MongoDB
-
-Now that our TypeScript + Node.js setup is complete, let's connect to MongoDB using the `mongoose` library.
-
-### 📦 Install Mongoose
-
-```bash
-npm install mongoose
-```
-
-### ⚙️ Update `dev` Script for .env Support
-
-To use environment variables from a `.env` file, modify your `package.json` like this:
+### `package.json` Scripts
 
 ```json
 "scripts": {
-  "type-check": "tsc",
-  "dev": "tsx watch --env-file=.env src/index.ts"
+ "type-check": "tsc",
+  "create": "tsx --env-file=.env src/controllers/create.ts",
+  "read": "tsx --env-file=.env src/controllers/read.ts",
+  "update": "tsx --env-file=.env src/controllers/update.ts",
+  "delete": "tsx --env-file=.env src/controllers/delete.ts"
 }
 ```
 
-> ✅ The `--env-file=.env` flag ensures that your environment variables are loaded during development.
-
-### 🗂️ Create a `.env` File
-
-In the root of your project, create a `.env` file:
-
-```
-MONGO_URI=mongodb+srv://your_username:your_password@your_cluster.mongodb.net/your_db
-```
-
-> 🛑 Do **not** commit `.env` to your repository. Add it to `.gitignore`.
-
-### 📁 Create the Database Connection File
-
-In `src/db.ts`, add the following code:
+## `src/db.ts`
 
 ```ts
 import mongoose from 'mongoose';
+
 const MONGO_URI = process.env.MONGO_URI || '';
 
 (async () => {
@@ -129,98 +107,149 @@ const MONGO_URI = process.env.MONGO_URI || '';
 })();
 ```
 
-> 💡 This script ensures your app exits if the connection fails, helping you catch issues early.
+## `src/models/product.model.ts`
 
-# 📚 Step 2: Define the `Book` Model with Mongoose
-
-Now that we have our MongoDB connection set up, it's time to define a simple data model. For this example, we will use a `Book` model.
-
-## 📙 Defining a Mongoose Book Model
-
-Let's define a simple `Book` model using Mongoose.
-
-### 📄 `src/models/Book.ts`
+### Define a TypeScript Interface
 
 ```ts
-import { Schema, model } from 'mongoose';
+import { Document } from 'mongoose';
 
-const BookSchema = new Schema({
-  title: { type: String, required: true },
-  author: { type: String, required: true },
-  publishedYear: { type: Number },
-  coverImage: { type: String }, //  URL of the book cover image
+export interface ProductDocument extends Document {
+  name: string;
+  stock: number;
+  price: number;
+  tags?: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+```
+
+### Create the Mongoose Schema
+
+```ts
+import { Schema } from 'mongoose';
+
+const productSchema = new Schema<ProductDocument>(
+  {
+    name: { type: String, required: true, unique: true },
+    stock: { type: Number, required: true },
+    price: { type: Number, required: true },
+    tags: [{ type: String }],
+  },
+  { timestamps: true }
+);
+```
+
+### Final Version:
+
+```ts
+import { Schema, model, Document } from 'mongoose';
+
+export interface ProductDocument extends Document {
+  name: string;
+  stock: number;
+  price: number;
+  tags?: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const productSchema = new Schema<ProductDocument>(
+  {
+    name: { type: String, required: true, unique: true },
+    stock: { type: Number, required: true },
+    price: { type: Number, required: true },
+    tags: [{ type: String }],
+  },
+  { timestamps: true }
+);
+
+export const Product = model<ProductDocument>('Product', productSchema);
+```
+
+## `src/controllers/create.ts`
+
+```ts
+import '@/db';
+import { Product } from '@/product.model';
+
+await Product.create({
+  name: 'T-Shirt',
+  price: 19.99,
+  stock: 50,
+  tags: ['clothing', 'unisex'],
 });
 
-export const Book = model('Book', BookSchema);
+await Product.insertMany([
+  { name: 'Hoodie', price: 34.99, stock: 30, tags: ['clothing', 'winter'] },
+  { name: 'Sneakers', price: 59.99, stock: 20, tags: ['shoes', 'sport'] },
+  { name: 'Cap', price: 14.99, stock: 100, tags: ['accessory', 'summer'] },
+]);
+
+console.log('✅ Seeding complete');
+process.exit();
 ```
 
-### 💡 Why These Fields?
-
-| Field           | Type     | Required | Purpose                         |
-| --------------- | -------- | -------- | ------------------------------- |
-| `title`         | `String` | ✅       | Name of the book                |
-| `author`        | `String` | ✅       | Author's name                   |
-| `publishedYear` | `Number` | ❌       | The year the book was published |
-| `coverImage`    | `String` | ❌       | URL of the book's cover image   |
-
-## 📘 Book Controller
-
-Now we will define basic controller logic to handle **CRUD operations** on our `Book`.
-
-### 📄 `src/controllers/bookController.ts`
+## `src/controllers/read.ts`
 
 ```ts
-import Book from '../models/bookSchema';
+import '@/db';
+import { Product } from '@/product.model';
 
-export async function getAllBooks() {
-  const books = await Book.find();
-  if (!books.length) {
-    throw new Error('No books found');
-  }
-  return books;
-}
+console.log('📦 All products:\n', await Product.find());
 
-export async function getBookById(id: string) {
-  const book = await Book.findById(id);
-  if (!book) {
-    throw new Error('Book not found');
-  }
-  return book;
-}
+console.log(
+  "🧢 Products with 'clothing' tag:\n",
+  await Product.find({ tags: 'clothing' })
+);
 
-export async function addNewBook(bookData: {
-  title: string;
-  author: string;
-  publishedYear: number;
-  coverImage: string;
-}) {
-  const newBook = await Book.create(bookData);
-  return newBook;
-}
+console.log(
+  '📈 In-stock products:\n',
+  await Product.find({ stock: { $gt: 0 } })
+);
 
-export async function updateBook(
-  id: string,
-  updatedData: {
-    title?: string;
-    author?: string;
-    publishedYear?: number;
-    coverImage?: string;
-  }
-) {
-  const updatedBook = await Book.findByIdAndUpdate(id, updatedData, {
-    new: true,
-  });
-  if (!updatedBook) {
-    throw new Error('Book not found');
-  }
-  return updatedBook;
-}
+console.log(
+  '💰 Within price range $10 - $30:\n',
+  await Product.find({ price: { $gte: 10, $lte: 30 } })
+);
 
-export async function deleteBook(id: string) {
-  const deletedBook = await Book.findByIdAndDelete(id);
-  if (!deletedBook) {
-    throw new Error('Book not found');
-  }
-  return { message: 'Book deleted successfully' };
-}
+process.exit();
 ```
+
+## 🔄 `src/controllers/update.ts`
+
+```ts
+import '@/db';
+import { Product } from '@/product.model';
+
+await Product.updateOne({ name: 'T-Shirt' }, { $set: { stock: 45 } });
+console.log('🔄 T-Shirt stock updated');
+
+await Product.updateMany({ tags: 'clothing' }, { $addToSet: { tags: 'sale' } });
+console.log('🏷️ Added "sale" tag to all clothing items');
+
+process.exit();
+```
+
+## 🗑️ `src/controllers/delete.ts`
+
+```ts
+import '@/db';
+import { Product } from '@/product.model';
+
+await Product.deleteOne({ name: 'Cap' });
+console.log('🗑️ Deleted product: Cap');
+
+await Product.deleteMany({ stock: { $lte: 0 } });
+console.log('🧹 Deleted all out-of-stock products');
+
+process.exit();
+```
+
+## 🏁 Outcome
+
+By completing this exercise, you will:
+
+- Learn how to **migrate MongoDB Shell logic into an actual Node.js project**
+- Understand **schema-based development** using Mongoose
+- Practice all CRUD operations

@@ -1,19 +1,23 @@
 {
-  "name": "07_crud_with_mongo",
+  "name": "12_crud_cli_refactor",
   "version": "1.0.0",
-  "description": "Before diving into database operations, let's start with a basic TypeScript + Node.js setup to create a clean environment for our future MongoDB CRUD logic.",
-  "main": "index.js",
+  "main": "app.ts",
+  "type": "module",
   "scripts": {
     "type-check": "tsc",
-    "dev": "tsx watch src/index.ts"
+    "create": "tsx --env-file=.env src/controllers/create.ts",
+    "read": "tsx --env-file=.env src/controllers/read.ts",
+    "update": "tsx --env-file=.env src/controllers/update.ts",
+    "delete": "tsx --env-file=.env src/controllers/delete.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "dependencies": {
+    "mongoose": "^8.15.2"
+  },
   "devDependencies": {
-    "@types/node": "^22.15.27",
-    "tsx": "^4.19.4",
-    "typescript": "^5.8.3"
+    "@types/node": "^24.0.1",
+    "tsx": "^4.20.3"
   }
 }
