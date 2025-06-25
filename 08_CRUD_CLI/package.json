@@ -1,22 +1,24 @@
 {
-  "name": "07_crud_w_mongo",
+  "name": "08_crud_cli",
   "version": "1.0.0",
-  "main": "src/app.ts",
+  "description": "",
+  "main": "app.ts",
   "type": "module",
+  "imports": {
+    "#db": "./src/db.ts"
+  },
   "scripts": {
-    "type-check": "tsc",
-    "dev": "tsx watch --env-file=.env src/app.ts",
-    "start": "tsx --env-file=.env src/app.ts"
+    "start": "node --experimental-transform-types --disable-warning=ExperimentalWarning --env-file=.env src/app.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
   "dependencies": {
-    "@types/node": "^24.0.0",
     "commander": "^14.0.0",
-    "mongodb": "^6.17.0",
-    "tsx": "^4.19.4",
-    "typescript": "^5.8.3"
+    "mongodb": "^6.17.0"
   }
 }

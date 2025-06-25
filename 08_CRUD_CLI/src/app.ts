@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { db } from '@/db';
+import { db } from '#db';
 
 // Initialize the CLI program
 const program = new Command();
@@ -47,17 +47,19 @@ program
 program
   .command('update')
   .description('Update product by name')
-  .argument('<name>', 'Product name')
+  .argument('<oldName>', 'Current product name')
+  .argument('<newName>', 'New product name')
   .argument('<stock>', 'New stock quantity')
   .argument('<price>', 'New product price')
-  .action(async (name, stockStr, priceStr) => {
+  .action(async (oldName, newName, stockStr, priceStr) => {
     const stock = parseInt(stockStr);
     const price = parseFloat(priceStr);
 
     const result = await db.collection('products').updateOne(
-      { name }, // Match by product name
+      { name: oldName },
       {
         $set: {
+          name: newName,
           stock,
           price,
           updated_at: new Date(),
@@ -66,9 +68,11 @@ program
     );
 
     if (result.matchedCount) {
-      console.log(`🔁 Updated: ${name} to ${stock} pcs at $${price}`);
+      console.log(
+        `🔁 Updated: ${oldName} => ${newName} (${stock} pcs at $${price})`
+      );
     } else {
-      console.log('⚠️ Product not found.');
+      console.log('⚠️  Product not found.');
     }
   });
 
@@ -81,9 +85,9 @@ program
     const result = await db.collection('products').deleteOne({ name });
 
     if (result.deletedCount) {
-      console.log(`🗑️ Deleted: ${name}`);
+      console.log(`🗑️  Deleted: ${name}`);
     } else {
-      console.log('⚠️ Product not found.');
+      console.log('⚠️  Product not found.');
     }
   });
 
