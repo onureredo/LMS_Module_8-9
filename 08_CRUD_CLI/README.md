@@ -4,53 +4,116 @@
 
 Build a complete CLI tool using **TypeScript** and **MongoDB** to perform full CRUD operations like Create, Read, Update, and Delete on an eCommerce-style product list.
 
-This project teaches you how to:
+This exercise covers how to:
 
 - Run TypeScript files in Node.js
 - Connect to a MongoDB database
 - Perform database operations from the terminal
 - Handle command-line arguments using `commander`
 
-## 💡 What is Commander?
+### What is Commander?
 
-[`commander`](https://www.npmjs.com/package/commander) is a popular and lightweight Node.js library used for building command-line interfaces. It helps you:
+`commander` is built on top of Node.js’s native `process.argv` array — which holds all the arguments passed to your CLI script.
 
-- Parse and validate CLI arguments easily
+It makes it easier to:
+
+- Parse and validate CLI arguments
 - Structure commands and subcommands clearly
 - Add descriptions, help text, and default values for a better CLI experience
 
 It’s perfect for projects where you want a user-friendly and scalable terminal tool.
 
-> 💡 For full setup instructions, revisit: [Running TypeScript in Node](https://www.notion.so/Running-TS-in-Node-1faae18bcb5480ad89d8fc54b1a84f85?pvs=21)
-
-## **📦 Setup**
+## **Setup**
 
 ```bash
 npm init -y
-npm install tsx typescript @types/node mongodb commander
+ # → initialize project
+
+npm install -D typescript @types/node
+# → 🛠️ dev-only: TypeScript, Node.js types
+
+npm install mongodb commander
+# → ✅ runtime: MongoDB driver & CLI interface helper
+
 ```
 
-## **🗂️ Create a `.env` File**
+### **Create a `.env` File**
 
-In the root of your project, create a `.env` file:
+In the root of your project, create a `.env` file:
 
-```env
+```markdown
 MONGO_URI=mongodb+srv://your_username:your_password@your_cluster.mongodb.net/your_db
 ```
 
-> 🛑 Do not commit `.env` to your repository. Add it to `.gitignore`.
+> 🛑 Do not commit .env to your repository. Add it to .gitignore.
 
-## **📄 Scripts in `package.json`**
+### **scripts in `package.json`**
+
+This project is a **pure CLI tool** — no server, no build step needed.
+
+That’s why we **only use a single `start` script**:
 
 ```json
-  "scripts": {
-    "type-check": "tsc",
-    "dev": "tsx watch --env-file=.env src/app.ts",
-    "start": "tsx --env-file=.env src/app.ts"
+ "scripts": {
+    "start": "node --experimental-transform-types --disable-warning=ExperimentalWarning --env-file=.env src/app.ts"
   },
 ```
 
-## **📁 Project Structure**
+Notes:
+
+- We load environment variables using `--env-file=.env`
+- No `--watch` flag since we are not auto-reloading during development.
+- No `build`, `prestart`, or `dist` output — this CLI runs directly with TypeScript via `node`.
+
+Just run your CLI commands directly with npm start and pass your arguments.
+
+### Import Paths and Aliases
+
+```tsx
+import { db } from '#db';
+```
+
+This alias is configured in both:
+
+`tsconfig.json` via the `paths` option
+`package.json` via the `imports` field (Node ESM support)
+
+### Why `#` instead of `@`?
+
+`@` is reserved for scoped packages in Node.js (like `@types/...`), so using `#` avoids conflicts and is safe for internal paths.
+
+💡 for full setup instructions, revisit: [Running TypeScript in Node](https://www.notion.so/Running-TS-in-Node-21dae18bcb548013a47ef10717d063d0?pvs=21)
+
+### **Example `package.json`**
+
+```json
+{
+  "name": "my_crud_cli_app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.ts",
+  "type": "module",
+  "imports": {
+    "#db": "./src/db.ts"
+  },
+  "scripts": {
+    "start": "node --experimental-transform-types --disable-warning=ExperimentalWarning --env-file=.env src/app.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "commander": "^14.0.0",
+    "mongodb": "^6.17.0"
+  }
+}
+```
+
+### **Folder Structure**
 
 ```bash
 📁 project-root/
@@ -64,32 +127,30 @@ MONGO_URI=mongodb+srv://your_username:your_password@your_cluster.mongodb.net/you
     └── 📄 app.ts        # CLI logic using commander
 ```
 
-## **📄 src/db.ts**
+### **src/db.ts**
 
-```ts
+```tsx
 import { MongoClient } from 'mongodb';
 
 const MONGO_URI = process.env.MONGO_URI || '';
 const client = new MongoClient(MONGO_URI);
 
-(async () => {
-  try {
-    await client.connect();
-    console.log('✅ Connected to MongoDB');
-  } catch (err) {
-    console.error('❌ MongoDB connection error:', err);
-    process.exit(1);
-  }
-})();
+try {
+  await client.connect();
+  console.log('✅ Connected to MongoDB');
+} catch (err) {
+  console.error('❌ MongoDB connection error:', err);
+  process.exit(1);
+}
 
-export const db = client.db('ecommerce');
+export const db = client.db();
 ```
 
-## **📄 src/app.ts (using Commander)**
+### **src/app.ts**
 
-```ts
+```tsx
 import { Command } from 'commander';
-import { db } from './db';
+import { db } from '#db';
 
 // Initialize the CLI program
 const program = new Command();
@@ -137,17 +198,19 @@ program
 program
   .command('update')
   .description('Update product by name')
-  .argument('<name>', 'Product name')
+  .argument('<oldName>', 'Current product name')
+  .argument('<newName>', 'New product name')
   .argument('<stock>', 'New stock quantity')
   .argument('<price>', 'New product price')
-  .action(async (name, stockStr, priceStr) => {
+  .action(async (oldName, newName, stockStr, priceStr) => {
     const stock = parseInt(stockStr);
     const price = parseFloat(priceStr);
 
     const result = await db.collection('products').updateOne(
-      { name }, // Match by product name
+      { name: oldName },
       {
         $set: {
+          name: newName,
           stock,
           price,
           updated_at: new Date(),
@@ -156,9 +219,11 @@ program
     );
 
     if (result.matchedCount) {
-      console.log(`🔁 Updated: ${name} to ${stock} pcs at $${price}`);
+      console.log(
+        `🔁 Updated: ${oldName} => ${newName} (${stock} pcs at $${price})`
+      );
     } else {
-      console.log('⚠️ Product not found.');
+      console.log('⚠️  Product not found.');
     }
   });
 
@@ -171,9 +236,9 @@ program
     const result = await db.collection('products').deleteOne({ name });
 
     if (result.deletedCount) {
-      console.log(`🗑️ Deleted: ${name}`);
+      console.log(`🗑️  Deleted: ${name}`);
     } else {
-      console.log('⚠️ Product not found.');
+      console.log('⚠️  Product not found.');
     }
   });
 
@@ -181,19 +246,27 @@ program
 program.parse();
 ```
 
-## **🧪 Example Command Structure**
+### **Example Command Structure**
 
 ```bash
-npm run start <operation> <product name> <stock> <price>
+npm start <operation> <product name> <stock> <price>
+
+# Add a new product
+npm start add "Shoes" 20 59.99
+
+# List all products
+npm start list
+
+# Update a product → **oldName, newName, stock, price**
+npm start update "Shoes" "Boots" 15 79.99
+
+# Delete a product
+npm start delete "Boots"
 ```
 
-## ✅ Summary
+## Summary
 
-With this CLI tool, you can:
-
-- Add new products: `npm run start add "T-Shirt" 50 19.99`
-- List all products: `npm run start list`
-- Update a product: `npm run start update "T-Shirt" 25 14.99`
-- Delete a product: `npm run start delete "T-Shirt"`
-
-🧠 You now have a fully functional CLI tool with `commander` and MongoDB.
+- Use `process.argv` via Commander to build CLI commands.
+- Load environment variables via `--env-file=.env` in the start script.
+- Connect to MongoDB and perform basic CRUD operations.
+- Organise logic into `src/db.ts` and `src/app.ts` for clarity and separation of concerns.
