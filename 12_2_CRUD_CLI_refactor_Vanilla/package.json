@@ -1,0 +1,26 @@
+{
+  "name": "12_2_crud_cli_refactor_vanilla",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "imports": {
+    "#db": "./src/db.ts",
+    "#models": "./src/models/index.ts",
+    "#controllers": "./src/controllers/index.ts"
+  },
+  "scripts": {
+    "start": "node --experimental-transform-types --disable-warning=ExperimentalWarning --env-file=.env src/app.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^14.0.0",
+    "mongoose": "^8.16.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.4",
+    "typescript": "^5.8.3"
+  }
+}
