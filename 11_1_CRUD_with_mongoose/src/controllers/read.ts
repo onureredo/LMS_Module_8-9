@@ -19,5 +19,3 @@ console.log(
 );
 
 process.exit();
-
-process.exit();

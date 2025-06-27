@@ -1,0 +1,29 @@
+{
+  "name": "11_2_crud_with_mongoose",
+  "version": "1.0.0",
+  "description": "",
+  "main": "",
+  "type": "module",
+  "imports": {
+    "#db": "./src/db.ts",
+    "#product": "./src/models/Products.ts",
+    "#models": "./src/models/index.ts"
+  },
+  "scripts": {
+    "type-check": "tsc",
+    "create": "node --experimental-transform-types --disable-warning=ExperimentalWarning --env-file=.env src/controllers/create.ts",
+    "read": "node --experimental-transform-types --disable-warning=ExperimentalWarning --env-file=.env src/controllers/read.ts",
+    "update": "node --experimental-transform-types --disable-warning=ExperimentalWarning --env-file=.env src/controllers/update.ts",
+    "delete": "node --experimental-transform-types --disable-warning=ExperimentalWarning --env-file=.env src/controllers/delete.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mongoose": "^8.16.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.4",
+    "typescript": "^5.8.3"
+  }
+}
